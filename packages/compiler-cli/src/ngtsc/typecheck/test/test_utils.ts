@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {CssSelector, ParseSourceFile, ParseSourceSpan, parseTemplate, R3TargetBinder, SchemaMetadata, SelectorMatcher, TmplAstElement, TmplAstReference, Type} from '@angular/compiler';
+import {CssSelector, ParseSourceFile, ParseSourceSpan, parseTemplate, R3TargetBinder, SchemaMetadata, SelectorMatcher, TmplAstElement, Type} from '@angular/compiler';
 import * as ts from 'typescript';
 
 import {absoluteFrom, AbsoluteFsPath, getSourceFileOrError, LogicalFileSystem} from '../../file_system';
@@ -153,6 +153,16 @@ export function ngForDts(): TestFile {
   };
 }
 
+export function ngForTypeCheckTarget(): TypeCheckingTarget {
+  const dts = ngForDts();
+  return {
+    ...dts,
+    fileName: dts.name,
+    source: dts.contents,
+    templates: {},
+  };
+}
+
 export const ALL_ENABLED_CONFIG: TypeCheckingConfig = {
   applyTemplateContextGuards: true,
   checkQueries: false,
@@ -173,6 +183,7 @@ export const ALL_ENABLED_CONFIG: TypeCheckingConfig = {
   strictSafeNavigationTypes: true,
   useContextGenericType: true,
   strictLiteralTypes: true,
+  enableTemplateTypeChecker: false,
 };
 
 // Remove 'ref' from TypeCheckableDirectiveMeta and add a 'selector' instead.
@@ -230,6 +241,7 @@ export function tcb(
     strictSafeNavigationTypes: true,
     useContextGenericType: true,
     strictLiteralTypes: true,
+    enableTemplateTypeChecker: false,
   };
   options = options || {
     emitSpans: false,
